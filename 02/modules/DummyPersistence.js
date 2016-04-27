@@ -1,10 +1,10 @@
-var promiseModule = require('promised-io');
+var promiseModule = require('promised-io/fs');
 
-var User = function User(){
-	this.firstName = null;
-	this.lastName = null;
-	this.dateOfBirth = null;
-}
+var User = function User(data){
+	this.firstName = (data && data.firstName) || null;
+	this.lastName = (data && data.lastName) || null;
+	this.dateOfBirth = (data && data.dateOfBirth) || null;
+};
 
 User.prototype.age = function(){
 	var today = new Date();
@@ -14,14 +14,49 @@ User.prototype.age = function(){
         ageDifference--;
     }
     return ageDifference;
-}
+};
 
-var UserDAO = function UserDAO(){
-	this.firstName = null;
-	this.lastName = null;
-	this.dateOfBirth = null;
-}
+var UserDAO = function UserDAO(filePath){
+	this.filePath = filePath;
+	this.persitedData= [];
+};
 
+UserDAO.prototype.readData= function(successCallback, errorCallback){
+	promiseModule.readFile(this.filePath)
+		.then(function(data){
+			this.persistedData = JSON.parse(data);
+			
+			if(successCallback)
+				successCallback(this.persistedData);
+		},function(error){
+			console.log(error);
+			
+			if(errorCallback)
+				errorCallback(error);
+		});
+};
+
+UserDAO.prototype.writeData= function(successCallback, errorCallback){
+	promiseModule.writeFile(this.filePath, JSON.stringify(this.persistedData))
+		.then(function(){
+			
+			if(successCallback)
+				successCallback();
+		},function(error){
+			console.log(error);
+			
+			if(errorCallback)
+				errorCallback(error);
+		});
+};
+
+UserDAO.prototype.searchUserByName= function(firstName, lastName){
+	for(var key in this.persistedData){
+		var user = this.persistedData[key];
+		if(user['firstName'] == firstName && user['lastName'] == lastName)
+			return user;
+	}
+};
 
 module.exports= {
 	User : User,
