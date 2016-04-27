@@ -1,6 +1,9 @@
 var menu = require('node-menu');
 var EventEmitter = require('events').EventEmitter;
 var seriesCustom = require('./modules/SeriesManuales.js');
+var dummyPersistence = require('./modules/DummyPersistence.js');
+
+var dao = new dummyPersistence.UserDAO('./storage/users.json');
 
 
 menu.addDelimiter('-', 40, 'Main Menu')
@@ -88,6 +91,32 @@ menu.addDelimiter('-', 40, 'Main Menu')
 			// In the update / delete operation, you’ve to trigger an error in case the specified user does not exist.
 			// If you’re trying to create an existing user, you’ve to return the corresponding message.
 
+			var user = new dummyPersistence.User();
+
+			user.firstName = 'Pedro';
+			user.lastName = 'Rodriguez';
+			user.dateOfBirth = new Date(2001, 08, 02, 0, 0, 0, 0);
+
+
+			// You should keep in mind the following:
+			// All representations of all resources should be specified as JSON.
+			// Use a simple file I/O to store the data.
+			// In the update / delete operation, you’ve to trigger an error in case the specified user does not exist.
+			// If you’re trying to create an existing user, you’ve to return the corresponding message.			
+
+			// Create an user
+
+			dao.addUser(user).
+				then(function(usuarios){
+					console.log('llegue');
+					dao.searchUserByName(user.firstName).lastName = 'pepedro'}).
+				then(function(){
+						// Retrieve an user by name
+						return dao.searchUserByName('Pedro')
+						}).
+				then(function(usuarioRecuperado){
+							dao.removeUser(user)}).
+				then(function(usuarios){console.log('done')});
 			
         })
     .addDelimiter('*', 40)
