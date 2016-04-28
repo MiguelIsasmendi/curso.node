@@ -75,12 +75,22 @@ menu.addDelimiter('-', 40, 'Main Menu')
         function() {
         	//Considering the following definition of “user”: 
 
+			// Name: Pedro
+			// LastName: Rodriguez
+			// Age: 25
+			// DOB: 02/08/2001
+
 			// Create an Object using promises that meets the following goals:
 			// Create an user
 			// Update user’s data
 			// Retrieve an user by name
 			// Delete an user
-			
+			// You should keep in mind the following:
+			// All representations of all resources should be specified as JSON.
+			// Use a simple file I/O to store the data.
+			// In the update / delete operation, you’ve to trigger an error in case the specified user does not exist.
+			// If you’re trying to create an existing user, you’ve to return the corresponding message.
+
 			var user = new dummyPersistence.User();
 
 			user.firstName = 'Pedro';
@@ -98,7 +108,8 @@ menu.addDelimiter('-', 40, 'Main Menu')
 			
 			var errorCallback = function(error){console.log(error)};
 			
-			new dummyPersistence.Promise(		
+			var promise = new dummyPersistence.Promise();
+			promise.resolve(
 				function(resolve,reject){
 					try{
 						var result = dao.addUser(user);
@@ -107,17 +118,24 @@ menu.addDelimiter('-', 40, 'Main Menu')
 						reject(error);
 					}
 				}).
-				then(function(){
-					var modifiedUser = dao.searchUserByName(user.firstName);
-					modifiedUser.lastName = 'pepedro';
+				then(function(usr){
+					console.log(JSON.stringify(usr));
+					var modifiedUser = dao.searchUserByName(usr.firstName).lastName = 'pepedro'.
 					
-					return dao.updateUser(modifiedUser);},errorCallback).
+					console.log(JSON.stringify(modifiedUser));
+					
+					return modifiedUser},errorCallback);
+				
+			/*dao.addUser(user).	
+				then(function(usuarios){
+					dao.searchUserByName(user.firstName).lastName = 'pepedro'}).
 				then(function(){
-					return dao.searchUserByName('Pedro')},errorCallback).
-				then(function(){
-					return dao.removeUser(user)},errorCallback).
-				then(function(){
-					return console.log(JSON.stringify(dao.persistedData()))},errorCallback);
+						// Retrieve an user by name
+						return dao.searchUserByName('Pedro')
+						}).
+				then(function(usuarioRecuperado){
+							dao.removeUser(user)}).
+				then(function(usuarios){console.log('done')});*/
 			
         })
     .addDelimiter('*', 40)

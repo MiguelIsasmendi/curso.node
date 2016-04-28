@@ -1,11 +1,7 @@
 var fs = require("fs");
-var Promise = require("promise");
+var Promise = require("promise").Promise;
 
 var User = function User(data){
-	this.initalize(data);
-};
-
-User.prototype.initalize = function (data){
 	this.firstName = (data && data.firstName) || null;
 	this.lastName = (data && data.lastName) || null;
 	this.dateOfBirth = (data && data.dateOfBirth) || null;
@@ -81,7 +77,7 @@ UserDAO.prototype.writeData = function(){
 
 	return promise;*/
 	
-	fs.writeFileSync(this.filePath, jsonString,{flag:'w+'});
+	fs.writeFile(this.filePath, jsonString,{flag:'w+'});
 	
 	return this.persistedData;
 };
@@ -134,21 +130,6 @@ UserDAO.prototype.removeUser = function(user){
 	}else{
 		throw new Error('The user is not persisted!!!!');
 	}
-};
-
-UserDAO.prototype.updateUser = function(user){
-	var userUpdated = null;
-
-	if(user){
-		userUpdated = this.searchUserByName(user.firstName);
-
-		if(userUpdated === user)
-			userUpdated.initalize(user);
-
-		this.writeData();
-	}
-
-	return userUpdated;
 };
 
 UserDAO.prototype.searchUserByName = function(firstName, errorCallback){
