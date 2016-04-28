@@ -8,7 +8,8 @@ function Course(newName, teacher){
 	this.students = [];
 	this.minimum_avg_grade = 0;
 	
-	this.setTeacher(teacher);
+	if(teacher)
+		this.setTeacher(teacher);
 };
 
 Course.prototype = new EventEmitter();
