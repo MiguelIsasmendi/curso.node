@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "node-menu": "0.0.9",
+    "node-promise": "^0.5.12",
     "promise": "^7.1.1"
   }
 }

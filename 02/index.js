@@ -105,10 +105,29 @@ menu.addDelimiter('-', 40, 'Main Menu')
 			// If you’re trying to create an existing user, you’ve to return the corresponding message.			
 
 			// Create an user
-
-			dao.addUser(user).
+			
+			var errorCallback = function(error){console.log(error)};
+			
+			var promise = new dummyPersistence.Promise();
+			promise.resolve(
+				function(resolve,reject){
+					try{
+						var result = dao.addUser(user);
+						resolve(result);
+					}catch(error){
+						reject(error);
+					}
+				}).
+				then(function(usr){
+					console.log(JSON.stringify(usr));
+					var modifiedUser = dao.searchUserByName(usr.firstName).lastName = 'pepedro'.
+					
+					console.log(JSON.stringify(modifiedUser));
+					
+					return modifiedUser},errorCallback);
+				
+			/*dao.addUser(user).	
 				then(function(usuarios){
-					console.log('llegue');
 					dao.searchUserByName(user.firstName).lastName = 'pepedro'}).
 				then(function(){
 						// Retrieve an user by name
@@ -116,7 +135,7 @@ menu.addDelimiter('-', 40, 'Main Menu')
 						}).
 				then(function(usuarioRecuperado){
 							dao.removeUser(user)}).
-				then(function(usuarios){console.log('done')});
+				then(function(usuarios){console.log('done')});*/
 			
         })
     .addDelimiter('*', 40)
