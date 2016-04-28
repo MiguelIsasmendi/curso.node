@@ -2,14 +2,14 @@ var moduloPersona = require('./Person.js');
 var studentId = 0;
 
 function Student(nombre, direccion, fechaNacimiento){
-	moduloPersona.Persona.call(this, nombre, direccion, fechaNacimiento);
+	moduloPersona.Person.call(this, nombre, direccion, fechaNacimiento);
 	this.id = studentId++;
 	this.avg_grade = 0;
 	this.current_grades = {};
 	
 };
 
-Student.prototype = Object.create(moduloPersona.Persona.prototype);
+Student.prototype = Object.create(moduloPersona.Person.prototype);
 Student.prototype.constructor = Student;
 
 Student.prototype.enrollToCourse = function(aCourse){

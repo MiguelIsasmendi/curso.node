@@ -1,7 +1,7 @@
   
 var EventEmitter = require('events').EventEmitter;
 
-function Persona(nombre, direccion, fechaNacimiento){
+function Person(nombre, direccion, fechaNacimiento){
 	
 	EventEmitter.call(this);
 
@@ -13,14 +13,14 @@ function Persona(nombre, direccion, fechaNacimiento){
 };
 
 
-Persona.prototype = Object.create(EventEmitter.prototype);
-Persona.prototype.constructor = Persona;
+Person.prototype = Object.create(EventEmitter.prototype);
+Person.prototype.constructor = Person;
 
-Persona.prototype.getName = function(){
+Person.prototype.getName = function(){
 		return this.name;
 	};
 
-Persona.prototype.getAge = function(){
+Person.prototype.getAge = function(){
 		var edad = null;
 		
 		if(this.birth_date)
@@ -29,12 +29,12 @@ Persona.prototype.getAge = function(){
 		return edad;
 	};
 
-Persona.prototype.addCourse = function(aCourse){
+Person.prototype.addCourse = function(aCourse){
 	this.courses.push(aCourse);
 };
 
-Persona.prototype.removeCourse = function(aCourse){
+Person.prototype.removeCourse = function(aCourse){
 		this.courses.splice(this.courses.indexOf(aCourse),1);
 };
 	
-module.exports = {Persona: Persona};
+module.exports = {Person: Person};

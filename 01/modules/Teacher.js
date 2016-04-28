@@ -1,10 +1,10 @@
 var moduloPersona = require('./Person.js');
 
 var Teacher = function(nombre, direccion, fechaNacimiento){
-	moduloPersona.Persona.call(this, nombre, direccion, fechaNacimiento);
+	moduloPersona.Person.call(this, nombre, direccion, fechaNacimiento);
 };
 
-Teacher.prototype = Object.create(moduloPersona.Persona.prototype);
+Teacher.prototype = Object.create(moduloPersona.Person.prototype);
 Teacher.prototype.constructor = Teacher;
 
 Teacher.prototype.teachCourse = function(aCourse){
