@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --ui tdd ./test/tdd.test.js"
+    "tdd_test": "mocha --ui tdd ./test/tdd.test.js",
+    "bdd_test": "mocha --ui tdd ./test/bdd.test.js",
+    "coverage": "istanbul cover %APPDATA%\npm\node_modules\mocha\bin\_mocha -- -R spec"
   },
   "keywords": [],
   "author": "",
