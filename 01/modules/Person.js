@@ -20,14 +20,23 @@ Person.prototype.getName = function(){
 		return this.name;
 	};
 
-Person.prototype.getAge = function(){
-		var edad = null;
-		
-		if(this.birth_date)
-			edad = new Date().getFullYear() - this.birth_date.getFullYear();
-		
-		return edad;
-	};
+Person.prototype.getAge = function(aDate){
+	var edad = null;
+	var referenceDate = aDate || new Date();
+
+	if(this.birth_date && referenceDate >= this.birth_date){
+
+	    edad = referenceDate.getFullYear() - this.birth_date.getFullYear();
+	    var monthDifference = referenceDate.getMonth() - this.birth_date.getMonth();
+	    
+	    if (monthDifference < 0 || (monthDifference === 0 && referenceDate.getDate() < this.birth_date.getDate())) {
+	        edad--;
+	    }
+
+	}
+
+    return edad;
+};
 
 Person.prototype.addCourse = function(aCourse){
 	this.courses.push(aCourse);
