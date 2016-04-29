@@ -64,6 +64,7 @@ describe('Course', function() {
 
 			expect(course.name).to.be.equal('course');
 			expect(course.teacher).to.be.equal(teacher);
+			expect(course.teacher.courses.indexOf(course)).to.be.equal(0);
 		});
 		
 	});
@@ -71,22 +72,62 @@ describe('Course', function() {
 	describe('#setTeacher()', function() {
 		
 		it('should assign the course to the new teacher and remove himself of the previous teacher', function() {
-		
+			var previousTeacher = new TeacherModule.Teacher('PreviousTeacher');
+			course = new CourseModule.Course('curso',previousTeacher);
+			teacher = new TeacherModule.Teacher('newTeacher');
+
+			course.setTeacher(teacher);
+
+			expect(course.teacher).to.be.equal(teacher);
+			expect(previousTeacher.courses).to.be.empty;
+			expect(course.teacher.courses.indexOf(course)).to.be.equal(0);
 		});
 
-		it('should emit event "teacherAssigned" sending himself and the new teacher assigned', function() {
-		
+		it('should emit event "teacherAssigned" sending himself and the new teacher assigned', function(done) {
+			course = new CourseModule.Course('curso');
+			teacher = new TeacherModule.Teacher('newTeacher');
+
+			course.on('teacherAssigned', function(aCourse, aTeacher){
+				expect(course).to.be.equal(aCourse);
+				expect(course.teacher).to.be.equal(aTeacher);
+
+				done();
+			});
+
+			course.setTeacher(teacher);
+			
 		});
 
 		it('should do nothing when triying to set the same teacher that it has', function() {
-		
+			course = new CourseModule.Course('curso');
+			teacher = new TeacherModule.Teacher('newTeacher');
+
+			course.setTeacher(teacher);
+
+			course.on('teacherAssigned', function(aCourse, aTeacher){
+				expect(course).to.not.be.equal(aCourse);
+				expect(course.teacher).to.not.be.equal(aTeacher);
+			});
+
+			course.setTeacher(teacher);
 		});
 		
 	});
 
 	describe('#addStudent()', function() {
 		it('should assign the course to the student and emit the "studentAdded" sending himself and the student as parameters', function() {
-		
+			student = new StudentModule.Student('Nombre');
+			course = new CourseModule.Course();
+
+			course.on('studentAdded', function(aCourse, aStudent){
+				expect(course).to.be.equal(aCourse);
+				expect(course.students[0]).to.be.equal(aStudent);
+			});
+
+			course.addStudent(student);
+
+			expect(course.students).to.have.lengthOf(1);
+			expect(course.students.indexOf(student)).to.be.equal(0);
 		});
 		
 		it('should not add a student more than once in the collection', function() {
@@ -109,13 +150,40 @@ describe('Course', function() {
 	});
 
 	describe('#removeStudent()', function() {
-		it('should assign the course to the student and emit the "studentAdded" sending himself and the student as parameters', function() {
 		
+		it('should do nothing when removing an element that is not in the collection students', function() {
+			student = new StudentModule.Student('Nombre');
+			var studentNotRemoved = new StudentModule.Student('Usuario Que No Existe');
+			course = new CourseModule.Course();
+			
+			course.addStudent(student);
+
+			course.on('studentRemoved', function(aCourse, aStudent){
+				expect(course).to.not.be.equal(aCourse);
+				expect(studentNotRemoved).to.not.be.equal(aStudent);
+			});
+
+			course.removeStudent(studentNotRemoved);
+
+			expect(course.students).lengthOf(1);
+		});
+
+		it('should remove a student from the course and emit the "studentRemoved" sending himself and the student as parameters', function() {
+			student = new StudentModule.Student('Nombre');
+			course = new CourseModule.Course();
+		
+			course.addStudent(student);
+			
+			course.on('studentRemoved', function(aCourse, aStudent){
+				expect(course).to.be.equal(aCourse);
+				expect(student).to.be.equal(aStudent);
+			});
+
+			course.removeStudent(student);
+
+			expect(course.students).to.be.empty;
 		});
 		
-		it('should assign the course to the student and emit the "studentAdded" sending himself and the student as parameters', function() {
-		
-		});
 	});
 
 });
