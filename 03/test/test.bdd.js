@@ -190,16 +190,102 @@ describe('Course', function() {
 
 describe('Student', function() {
 	var student = new StudentModule.Student();
+	var course = new CourseModule.Course();
 
-	describe('#addCourse()', function() {
-		it('should add an object to the courses array', function() {
-			student.addCourse(new CourseModule.Course());
-		 	expect(student.courses).to.be.not.empty;
+	describe('#enrollToCourse(aCourse)', function() {
+		it('should add himself to the a course only once', function() {
+			student = new StudentModule.Student();
+			course = new CourseModule.Course();
+			
+			student.enrollToCourse(course);
+			student.enrollToCourse(course);
+
+		 	expect(student.courses).to.have.lengthOf(1);
+		 	expect(student.courses.indexOf(course)).to.be.equal(0);
+		 	expect(course.students.indexOf(student)).to.be.equal(0);
 		});
-		
+	});
+
+	describe('#leaveCourse(aCourse)', function() {
+		it('should add an object to the courses array', function() {
+			student = new StudentModule.Student();
+			course = new CourseModule.Course();
+			
+			student.enrollToCourse(course);
+
+			student.leaveCourse(course);
+		 	
+		 	expect(student.courses.indexOf(course)).to.be.equal(0);
+		 	expect(course.students.indexOf(student)).to.be.equal(0);
+		});
+	});
+
+	describe('#setCourseGrade(aCourse, aGrade)', function() {
+		it('set to a previously enrolled course a grade', function() {
+			student = new StudentModule.Student();
+			course = new CourseModule.Course();
+			var grade = 12;
+
+			student.on('gradeEmited', function(aStudent,aCourse,aGrade){
+				expect(aStudent).to.be.equal(student);
+				expect(aCourse).to.be.equal(course);
+				expect(aGrade).to.be.equal(grade);
+			});
+
+			
+			student.enrollToCourse(course);
+			student.setCourseGrade(course,grade);
+
+			expect(student.avg_grade).to.be.equal(grade);
+
+		 	expect(student.courses.indexOf(course)).to.be.equal(0);
+	
+		});
 	});
 
 });
 
+describe('Teacher', function(){
+	var teacher = new TeacherModule.Teacher();
+	var course = new CourseModule.Course();
 
+	describe('#teachCourse()', function(){
+		it('should add the course to the teacher and to the collection of courses if it is not added yet', function(){
+			teacher = new TeacherModule.Teacher();
+			course = new CourseModule.Course();
 
+			teacher.teachCourse(course);
+			
+			expect(teacher.courses.indexOf(course)).to.be.equal(0);
+			expect(course.teacher).to.be.equal(teacher);
+		});
+	});
+
+	describe('#stopTeachingCourse()', function(){
+		it('should remove himself from the course and delete the course if it is included in the courses collection', function(){
+			teacher = new TeacherModule.Teacher();
+			course = new CourseModule.Course();
+			
+			course.setTeacher(teacher);
+
+			expect(teacher.courses.indexOf(course)).to.be.equal(0);
+			expect(course.teacher).to.be.equal(teacher);
+		});
+	});
+
+	describe('#gradeStudent()', function(){
+		it('should set the grade to a student.', function(){
+			teacher = new TeacherModule.Teacher('Profesor');
+			course = new CourseModule.Course('Curso');
+			var student = new StudentModule.Student('Nombre');
+			
+			course.setTeacher(teacher);
+			student.enrollToCourse(course);
+
+			teacher.gradeStudent(student);
+
+			expect(teacher.courses.indexOf(course)).to.be.equal(0);
+			expect(course.teacher).to.be.equal(teacher);
+		});
+	});
+});

@@ -22,6 +22,7 @@ Course.prototype.setTeacher = function(aTeacher){
 			this.teacher.stopTeachingCourse(this);
 
 		this.teacher = aTeacher;
+
 		this.emit('teacherAssigned', this, aTeacher);
 
 		if(this.teacher)
@@ -33,6 +34,9 @@ Course.prototype.addStudent = function(aStudent){
 	if(aStudent && this.students.indexOf(aStudent) == -1){
 		this.students.push(aStudent);
 		this.emit('studentAdded', this, aStudent);
+
+		if(aStudent.courses.indexOf(this) == -1)
+			aStudent.enrollToCourse(this);
 	}
 };
 	
@@ -41,6 +45,9 @@ Course.prototype.removeStudent = function(aStudent){
 
 	if(index > -1){
 		this.students.splice(index,1);
+
+		aStudent.leaveCourse(this);
+		
 		this.emit('studentRemoved', this, aStudent);
 	}
 };

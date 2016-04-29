@@ -13,29 +13,38 @@ Student.prototype = Object.create(moduloPersona.Person.prototype);
 Student.prototype.constructor = Student;
 
 Student.prototype.enrollToCourse = function(aCourse){
-	this.addCourse(aCourse);
 
-	aCourse.addStudent(this);
+	if(this.courses.indexOf(aCourse) == -1){
+		this.addCourse(aCourse);
+
+		aCourse.addStudent(this);
+	}
 };
 
 Student.prototype.leaveCourse = function(aCourse){
-	aCourse.removeStudent(this);
 
-	this.removeCourse(aCourse);
+	if(aCourse.students.indexOf(this) == -1){
+		aCourse.removeStudent(this);
+
+		this.removeCourse(aCourse);
+	}
 };
 
 Student.prototype.setCourseGrade = function(aCourse, aGrade){
-	var average_grade = 0;
-	
-	this.current_grades[aCourse] = aGrade;
 
-	for(var indice in this.current_grades){
-		average_grade += this.current_grades[indice];
+	if(aGrade && aCourse && this.courses.indexOf(aCourse) > -1){
+		var added_grades = 0;
+		
+		this.current_grades[aCourse] = aGrade;
+
+		for(var indice in this.current_grades){
+			added_grades += this.current_grades[indice];
+		}
+
+		this.avg_grade = added_grades / Object.keys(this.current_grades).length;
+		
+		this.emit('gradeEmited',this,aCourse,aGrade);
 	}
-
-	this.avg_grade = average_grade / this.current_grades.lenght;
-	
-	this.emit('gradeEmited',this,aCourse,aGrade);
 };
 
 module.exports = {Student: Student};

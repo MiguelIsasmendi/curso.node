@@ -8,7 +8,11 @@ Teacher.prototype = Object.create(moduloPersona.Person.prototype);
 Teacher.prototype.constructor = Teacher;
 
 Teacher.prototype.teachCourse = function(aCourse){
-	this.addCourse(aCourse);
+	if(this.courses.indexOf(aCourse) == -1)
+		this.addCourse(aCourse);
+
+	if(aCourse.teacher != this)
+		aCourse.setTeacher(this);
 };
 
 Teacher.prototype.stopTeachingCourse = function(aCourse){

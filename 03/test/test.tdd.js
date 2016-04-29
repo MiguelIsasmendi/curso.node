@@ -156,7 +156,8 @@ suite('StudentModule', function(){
 		test('own variables status', function(){
 			assert.notEqual(null, student.id,'property id should not return null on initialization!!!');
 			assert.equal(0, student.avg_grade,'property avg_grade should return null on initialization!!!');
-			assert.notEqual(null, student.current_grades,'property current_grades should return null on initialization!!!');						
+			assert.notEqual(null, student.current_grades,'property current_grades should return null on initialization!!!');
+			assert.isObject(student, student.current_grades,'property current_grades should be an anonimous Object instance!!!');
 		});
 		
 	});
