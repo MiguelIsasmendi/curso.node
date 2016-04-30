@@ -11,7 +11,7 @@ String.prototype.times = function(number) {
 }
 
 var menu = require('node-menu');
-var _ = require('lodash'); 
+var fs = require('fs');
 
 var StudentModule = require('./modules/Student.js');
 var TeacherModule = require('./modules/Teacher.js');
@@ -66,11 +66,37 @@ menu.addDelimiter('-', 40, 'Main Menu')
         null, 
         [{'name': 'Teacher Name', 'type': 'string'}, {'name': 'Course Name', 'type': 'string'}])
     .addItem(
-        'List all students',
-        function(){
-			for(var index in students){
-				console.log(students[index]);
+        'Store relational data',function(){
+			/*var students = {};
+			var teachers = {};
+			var courses = {};
+			
+			var persistibleObject = {};
+			
+			//processing students
+			var nonRelatedObjects = [];
+			
+			for(var i in students){
+				if(students.hasOwnProperty(i) && students[i].courses.length == 0){
+					nonRelatedObjects.push(students[i]);
+				}
 			}
+			
+			persistibleObject['looseStudents'] = nonRelatedObjects;
+			
+			//processing teachers
+			var nonRelatedObjects = [];
+			
+			for(var i in students){
+				if(students.hasOwnProperty(i) && students[i].courses.length == 0){
+					nonRelatedObjects.push(students[i]);
+				}
+			}
+			
+			
+			var jsonString = JSON.stringify(this.persistedData);
+	
+			fs.writeFileSync(__dirname+'/storage/datos.json', jsonString,{flag:'w+'});*/
 		},
         null)
     .addDelimiter('*', 40)
