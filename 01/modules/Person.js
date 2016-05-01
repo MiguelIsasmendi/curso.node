@@ -1,10 +1,12 @@
   
 var EventEmitter = require('events').EventEmitter;
+var personId = 0;
 
-function Person(nombre, direccion, fechaNacimiento){
+function Person(id,nombre, direccion, fechaNacimiento){
 	
 	EventEmitter.call(this);
 
+	this.id = id;
 	this.name = nombre;
 	this.address = direccion;
 	this.birth_date = fechaNacimiento;
@@ -12,9 +14,12 @@ function Person(nombre, direccion, fechaNacimiento){
 	this.courses= [];
 };
 
-
 Person.prototype = Object.create(EventEmitter.prototype);
 Person.prototype.constructor = Person;
+
+Person.prototype.getNewId = function(){
+		return personId++;
+	};
 
 Person.prototype.getName = function(){
 		return this.name;
@@ -45,5 +50,19 @@ Person.prototype.addCourse = function(aCourse){
 Person.prototype.removeCourse = function(aCourse){
 		this.courses.splice(this.courses.indexOf(aCourse),1);
 };
-	
+
+Person.prototype.exportTo = function(anObject){
+	anObject.id = this.id;
+	anObject.name = this.name;
+	anObject.address = this.address;
+	anObject.birth_date = this.birth_date;
+};
+
+Person.prototype.importFrom = function(anObject){
+	this.id = anObject.id || this.id;
+	this.name = anObject.name;
+	this.address = anObject.address;
+	this.birth_date = anObject.birth_date;
+};
+
 module.exports = {Person: Person};

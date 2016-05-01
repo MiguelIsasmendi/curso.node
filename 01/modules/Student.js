@@ -1,9 +1,7 @@
 var moduloPersona = require('./Person.js');
-var studentId = 0;
 
-function Student(nombre, direccion, fechaNacimiento){
-	moduloPersona.Person.call(this, nombre, direccion, fechaNacimiento);
-	this.id = studentId++;
+function Student(id,nombre, direccion, fechaNacimiento){
+	moduloPersona.Person.call(this, id, nombre, direccion, fechaNacimiento);
 	this.avg_grade = 0;
 	this.current_grades = {};
 	
@@ -35,7 +33,7 @@ Student.prototype.setCourseGrade = function(aCourse, aGrade){
 	if(aGrade && aCourse && this.courses.indexOf(aCourse) > -1){
 		var added_grades = 0;
 		
-		this.current_grades[aCourse] = aGrade;
+		this.current_grades[aCourse.id] = aGrade;
 
 		for(var indice in this.current_grades){
 			added_grades += this.current_grades[indice];
@@ -45,6 +43,20 @@ Student.prototype.setCourseGrade = function(aCourse, aGrade){
 		
 		this.emit('gradeEmited',this,aCourse,aGrade);
 	}
+};
+
+Student.prototype.exportTo = function(anObject){
+	Person.prototype.exportTo(anObject);
+
+	anObject.avg_grade = this.avg_grade;
+	anObject.current_grades = this.current_grades;
+};
+
+Student.prototype.importFrom = function(anObject){
+	Person.prototype.importFrom(anObject);
+	
+	this.avg_grade = anObject.avg_grade;
+	this.current_grades = anObject.current_grades;
 };
 
 module.exports = {Student: Student};

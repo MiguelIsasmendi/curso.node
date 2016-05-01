@@ -1,9 +1,11 @@
 var EventEmitter = require('events').EventEmitter;
 
-function Course(newName, teacher){
+var globalId = 0;
+
+function Course(id, newName, teacher){
 
 	EventEmitter.call(this);
-
+	this.id = id;
 	this.name = newName;
 	this.students = [];
 	this.minimum_avg_grade = 0;
@@ -14,6 +16,10 @@ function Course(newName, teacher){
 
 Course.prototype = new EventEmitter();
 Course.prototype.constructor = Course;
+
+Course.prototype.getNewId = function(){
+		return globalId++;
+	};
 	
 Course.prototype.setTeacher = function(aTeacher){
 
@@ -49,6 +55,28 @@ Course.prototype.removeStudent = function(aStudent){
 		aStudent.leaveCourse(this);
 		
 		this.emit('studentRemoved', this, aStudent);
+	}
+};
+
+Course.prototype.exportTo = function(anObject){
+
+	anObject.id = this.id;
+	anObject.name = this.name;
+	anObject.students = this.students.map(function(element){return element.id});
+
+	if(this.teacher)
+			anObject.teacher = this.teacher.id;
+};
+
+Course.prototype.importFrom = function(anObject, outerContext){
+	this.id = anObject.id || this.id;
+	this.name = anObject.name;
+
+	if(anObject.teacher)
+		this.setTeacher(outerContext.teachers[anObject.teacher])
+
+	for (var i = 0; i < anObject.students.length; i++) {
+		this.addStudent(outerContext.students[anObject.students[i]]);
 	}
 };
 

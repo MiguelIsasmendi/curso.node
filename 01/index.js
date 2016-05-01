@@ -16,6 +16,7 @@ var fs = require('fs');
 var StudentModule = require('./modules/Student.js');
 var TeacherModule = require('./modules/Teacher.js');
 var CourseModule = require('./modules/Course.js');
+var RelationsPersister = require('./modules/RelationsPersister.js').RelationsPersister;
 
 var students = {};
 var teachers = {};
@@ -27,7 +28,7 @@ menu.addDelimiter('-', 40, 'Main Menu')
         function(nombre, direccion, diaNacimiento, mesNacimiento, anioNacimiento) {
 			var fechaNacimiento = new Date(anioNacimiento, mesNacimiento, diaNacimiento, 0, 0, 0, 0);
 			
-			var estudiante = new StudentModule.Student(nombre, direccion, fechaNacimiento);
+			var estudiante = new StudentModule.Student(Student.getNewId(),nombre, direccion, fechaNacimiento);
 			
 			students[estudiante.id] = estudiante;
 
@@ -41,7 +42,7 @@ menu.addDelimiter('-', 40, 'Main Menu')
             		
 			var fechaNacimiento = new Date(anioNacimiento, mesNacimiento, diaNacimiento, 0, 0, 0, 0);
 			
-			teachers[nombre] = new TeacherModule.Teacher(nombre, direccion, fechaNacimiento);			
+			teachers[nombre] = new TeacherModule.Teacher(Teacher.getNewId(),nombre, direccion, fechaNacimiento);			
         },
         null,
 		[{'name': 'Name', 'type': 'string'}, {'name': 'Address', 'type': 'string'}, {'name': 'Day of Birth', 'type': 'numeric'}, {'name': 'Month of Birth', 'type': 'numeric'}, {'name': 'Year of Birth', 'type': 'numeric'}])
@@ -61,42 +62,22 @@ menu.addDelimiter('-', 40, 'Main Menu')
         function(teacherName, courseName) {
         	var teacher = teachers[teacherName];
             
-           courses[courseName] = new CourseModule.Course(courseName,teacher);
+           courses[courseName] = new CourseModule.Course(CourseModule.getNewId(),courseName,teacher);
         },
         null, 
         [{'name': 'Teacher Name', 'type': 'string'}, {'name': 'Course Name', 'type': 'string'}])
     .addItem(
-        'Store relational data',function(){
-			/*var students = {};
-			var teachers = {};
-			var courses = {};
-			
-			var persistibleObject = {};
-			
-			//processing students
-			var nonRelatedObjects = [];
-			
-			for(var i in students){
-				if(students.hasOwnProperty(i) && students[i].courses.length == 0){
-					nonRelatedObjects.push(students[i]);
-				}
-			}
-			
-			persistibleObject['looseStudents'] = nonRelatedObjects;
-			
-			//processing teachers
-			var nonRelatedObjects = [];
-			
-			for(var i in students){
-				if(students.hasOwnProperty(i) && students[i].courses.length == 0){
-					nonRelatedObjects.push(students[i]);
-				}
-			}
-			
-			
-			var jsonString = JSON.stringify(this.persistedData);
-	
-			fs.writeFileSync(__dirname+'/storage/datos.json', jsonString,{flag:'w+'});*/
+        'Export relational data',function(){
+        	new RelationsPersister(__dirname + '/storage/datos.json').export(students, teachers, courses);
+		},
+        null)
+    .addItem(
+        'Import relational data',function(){
+        	new RelationsPersister(__dirname + '/storage/datos.json').import(
+        			function(data){
+        				students = data['students'];
+        				teachers = data['teachers'];
+        				courses = data['courses']});
 		},
         null)
     .addDelimiter('*', 40)

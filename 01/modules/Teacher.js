@@ -1,7 +1,7 @@
 var moduloPersona = require('./Person.js');
 
-var Teacher = function(nombre, direccion, fechaNacimiento){
-	moduloPersona.Person.call(this, nombre, direccion, fechaNacimiento);
+var Teacher = function(id, nombre, direccion, fechaNacimiento){
+	moduloPersona.Person.call(this, id, nombre, direccion, fechaNacimiento);
 };
 
 Teacher.prototype = Object.create(moduloPersona.Person.prototype);
