@@ -28,7 +28,7 @@ menu.addDelimiter('-', 40, 'Main Menu')
         function(nombre, direccion, diaNacimiento, mesNacimiento, anioNacimiento) {
 			var fechaNacimiento = new Date(anioNacimiento, mesNacimiento, diaNacimiento, 0, 0, 0, 0);
 			
-			var estudiante = new StudentModule.Student(Student.getNewId(),nombre, direccion, fechaNacimiento);
+			var estudiante = new StudentModule.Student(StudentModule.getNewId(),nombre, direccion, fechaNacimiento);
 			
 			students[estudiante.id] = estudiante;
 
@@ -42,30 +42,59 @@ menu.addDelimiter('-', 40, 'Main Menu')
             		
 			var fechaNacimiento = new Date(anioNacimiento, mesNacimiento, diaNacimiento, 0, 0, 0, 0);
 			
-			teachers[nombre] = new TeacherModule.Teacher(Teacher.getNewId(),nombre, direccion, fechaNacimiento);			
+			var teacher = new TeacherModule.Teacher(TeacherModule.getNewId(),nombre, direccion, fechaNacimiento);			
+			
+			teachers[teacher.id] = teacher;
+
+			console.log(teacher);
         },
         null,
 		[{'name': 'Name', 'type': 'string'}, {'name': 'Address', 'type': 'string'}, {'name': 'Day of Birth', 'type': 'numeric'}, {'name': 'Month of Birth', 'type': 'numeric'}, {'name': 'Year of Birth', 'type': 'numeric'}])
     .addItem(
         'Enroll student to a course',
-        function(studentId, courseName){
+        function(studentId, courseId){
 			
-        	var course = courses[courseName];
+        	var course = courses[courseId];
+
         	var student = students[studentId];
 
-			student.enrollToCourse(course);
+        	try{
+				student.enrollToCourse(course);
+			} catch(e){
+				console.log('Se generó el siguiente error:');
+				console.log(e);
+				console.log('Verifique parámetros');
+			}
 		},
         null, 
-        [{'name': 'Student Id', 'type': 'numeric'},{'name': 'Course Name', 'type': 'string'}])
+        [{'name': 'Student Id', 'type': 'numeric'},{'name': 'Course Id', 'type': 'numeric'}])
     .addItem(
         'Get teacher to teach a course', 
-        function(teacherName, courseName) {
-        	var teacher = teachers[teacherName];
+        function(teacherId, courseName) {
+        	var teacher = teachers[teacherId];
             
-           courses[courseName] = new CourseModule.Course(CourseModule.getNewId(),courseName,teacher);
+           var course = null;
+
+           for(var i in courses){
+           		if(courses[i].name = courseName){
+           			course = courses[i];
+           			break;
+           		}
+           }
+
+
+           if(!course){
+	           	course = new CourseModule.Course(CourseModule.getNewId(),courseName,teacher);
+
+	           courses[course.id] = course;
+	       } else {
+	       		course.setTeacher(teacher);
+	       }
+
+	       console.log(course);
         },
         null, 
-        [{'name': 'Teacher Name', 'type': 'string'}, {'name': 'Course Name', 'type': 'string'}])
+        [{'name': 'Teacher Id', 'type': 'numeric'}, {'name': 'Course Name', 'type': 'string'}])
     .addItem(
         'Export relational data',function(){
         	new RelationsPersister(__dirname + '/storage/datos.json').export(students, teachers, courses);
@@ -78,6 +107,18 @@ menu.addDelimiter('-', 40, 'Main Menu')
         				students = data['students'];
         				teachers = data['teachers'];
         				courses = data['courses']});
+		},
+        null)
+    .addItem(
+        'List all courses ',function(){
+
+        	console.log('Courses (id, name, teacher name, number of students)');
+			console.log('-----------------------------------------------------');
+
+        	for (var i in courses) {
+        		var course = courses[i];
+        		console.log(course.id, course.name, course.teacher.name, course.students.length);
+        	}
 		},
         null)
     .addDelimiter('*', 40)

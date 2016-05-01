@@ -46,17 +46,19 @@ Student.prototype.setCourseGrade = function(aCourse, aGrade){
 };
 
 Student.prototype.exportTo = function(anObject){
-	Person.prototype.exportTo(anObject);
+	moduloPersona.Person.prototype.exportTo.call(this, anObject);
 
 	anObject.avg_grade = this.avg_grade;
 	anObject.current_grades = this.current_grades;
 };
 
 Student.prototype.importFrom = function(anObject){
-	Person.prototype.importFrom(anObject);
+	moduloPersona.Person.prototype.importFrom.call(this, anObject);
 	
 	this.avg_grade = anObject.avg_grade;
 	this.current_grades = anObject.current_grades;
 };
 
-module.exports = {Student: Student};
+module.exports = {Student: Student,
+				getNewId: moduloPersona.getNewId,
+				ssyncGlobalIdWith: moduloPersona.syncGlobalIdWith};

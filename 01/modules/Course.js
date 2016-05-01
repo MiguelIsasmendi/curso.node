@@ -1,6 +1,14 @@
 var EventEmitter = require('events').EventEmitter;
 
-var globalId = 0;
+var globalId = 1;
+
+function getNewId (){
+	return globalId++;
+};
+
+function syncGlobalIdWith(id){
+	globalId = Math.max(globalId, id) || globalId;
+};
 
 function Course(id, newName, teacher){
 
@@ -17,10 +25,6 @@ function Course(id, newName, teacher){
 Course.prototype = new EventEmitter();
 Course.prototype.constructor = Course;
 
-Course.prototype.getNewId = function(){
-		return globalId++;
-	};
-	
 Course.prototype.setTeacher = function(aTeacher){
 
 	if(this.teacher !== aTeacher){
@@ -69,15 +73,24 @@ Course.prototype.exportTo = function(anObject){
 };
 
 Course.prototype.importFrom = function(anObject, outerContext){
+
 	this.id = anObject.id || this.id;
+
+	syncGlobalIdWith(this.id);
+
 	this.name = anObject.name;
 
 	if(anObject.teacher)
 		this.setTeacher(outerContext.teachers[anObject.teacher])
 
 	for (var i = 0; i < anObject.students.length; i++) {
-		this.addStudent(outerContext.students[anObject.students[i]]);
+		var studentId = anObject.students[i];
+		var student = outerContext['students'][studentId];
+
+		this.addStudent(student);
 	}
 };
 
-module.exports = {Course:Course};
+module.exports = {Course:Course,
+				syncGlobalIdWith:syncGlobalIdWith,
+				getNewId: getNewId};

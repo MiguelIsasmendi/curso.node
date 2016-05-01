@@ -1,6 +1,15 @@
   
 var EventEmitter = require('events').EventEmitter;
-var personId = 0;
+var personId = 1;
+
+
+function getNewId(){
+	return personId++;
+};
+
+function syncGlobalIdWith(id){
+	personId = Math.max(personId, id) || personId;
+};
 
 function Person(id,nombre, direccion, fechaNacimiento){
 	
@@ -16,10 +25,6 @@ function Person(id,nombre, direccion, fechaNacimiento){
 
 Person.prototype = Object.create(EventEmitter.prototype);
 Person.prototype.constructor = Person;
-
-Person.prototype.getNewId = function(){
-		return personId++;
-	};
 
 Person.prototype.getName = function(){
 		return this.name;
@@ -60,9 +65,12 @@ Person.prototype.exportTo = function(anObject){
 
 Person.prototype.importFrom = function(anObject){
 	this.id = anObject.id || this.id;
+	
+	syncGlobalIdWith(this.id);
+
 	this.name = anObject.name;
 	this.address = anObject.address;
 	this.birth_date = anObject.birth_date;
 };
 
-module.exports = {Person: Person};
+module.exports = {Person: Person, getNewId: getNewId, syncGlobalIdWith: syncGlobalIdWith};

@@ -14,7 +14,7 @@ RelationsPersister.prototype.export = function (studentsObject,teachersObject,co
 
 	var newArray = [];
 
-	for (var i = studentsObject.length - 1; i >= 0; i--) {
+	for (var i in studentsObject) {
 		var persitibleObject = {};
 		studentsObject[i].exportTo(persitibleObject);
 		newArray.push(persitibleObject);
@@ -26,7 +26,7 @@ RelationsPersister.prototype.export = function (studentsObject,teachersObject,co
 
 	newArray = [];
 
-	for (var i = teachersObject.length - 1; i >= 0; i--) {
+	for (var i in teachersObject) {
 		var persitibleObject = {};
 		teachersObject[i].exportTo(persitibleObject);
 		newArray.push(persitibleObject);
@@ -38,7 +38,7 @@ RelationsPersister.prototype.export = function (studentsObject,teachersObject,co
 
 	newArray = [];
 
-	for (var i = coursesObject.length - 1; i >= 0; i--) {
+	for (var i in coursesObject) {
 		var persitibleObject = {};
 		coursesObject[i].exportTo(persitibleObject);
 		newArray.push(persitibleObject);
@@ -64,6 +64,8 @@ RelationsPersister.prototype.import = function (callback){
 
 		student.importFrom(retrievedData['students'][i]);
 
+		console.log(student);
+
 		newReturn[student.id] = student;
 	}
 
@@ -78,6 +80,8 @@ RelationsPersister.prototype.import = function (callback){
 
 		teacher.importFrom(retrievedData['teachers'][i]);
 
+		console.log(teacher);
+
 		newReturn[teacher.id] = teacher;
 	}
 
@@ -90,7 +94,9 @@ RelationsPersister.prototype.import = function (callback){
 	for (var i = retrievedData['courses'].length - 1; i >= 0; i--) {
 		var course = new CourseModule.Course();
 
-		course.importFrom(retrievedData['courses'][i],retrievedData);
+		course.importFrom(retrievedData['courses'][i], retrievedData);
+
+		console.log(course);
 
 		newReturn[course.id] = course;
 	}

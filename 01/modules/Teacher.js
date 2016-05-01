@@ -1,6 +1,6 @@
 var moduloPersona = require('./Person.js');
 
-var Teacher = function(id, nombre, direccion, fechaNacimiento){
+function Teacher(id, nombre, direccion, fechaNacimiento){
 	moduloPersona.Person.call(this, id, nombre, direccion, fechaNacimiento);
 };
 
@@ -23,4 +23,6 @@ Teacher.prototype.gradeStudent = function(aStudent, aCourse, aGrade){
 	aStudent.setCourseGrade(aCourse, aGrade);
 };
 
-module.exports = {Teacher: Teacher};
+module.exports = {Teacher: Teacher,
+				getNewId: moduloPersona.getNewId,
+				syncGlobalIdWith: moduloPersona.syncGlobalIdWith};
