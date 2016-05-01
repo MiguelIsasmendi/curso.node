@@ -58,9 +58,9 @@ describe('Course', function() {
 	var teacher = new TeacherModule.Teacher('Name');
 	var student = new StudentModule.Student('Nombre');
 
-	describe('#Course(name,Teacher)', function() {
+	describe('#Course(id, name, Teacher)', function() {
 		it('should assign the course to the teacher', function() {
-			course = new CourseModule.Course('course', teacher);
+			course = new CourseModule.Course(CourseModule.getNewId(), 'course', teacher);
 
 			expect(course.name).to.be.equal('course');
 			expect(course.teacher).to.be.equal(teacher);

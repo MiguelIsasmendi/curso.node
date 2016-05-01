@@ -11,12 +11,15 @@ String.prototype.times = function(number) {
 }
 
 var menu = require('node-menu');
-var fs = require('fs');
+var logger = require('winston');
+logger.add(logger.transports.File, {filename: 'app.log'});
+
 
 var StudentModule = require('./modules/Student.js');
 var TeacherModule = require('./modules/Teacher.js');
 var CourseModule = require('./modules/Course.js');
 var RelationsPersister = require('./modules/RelationsPersister.js').RelationsPersister;
+var relationsPersister = new (require('./modules/RelationsPersister.js').RelationsPersister)(__dirname + '/storage/datos.json');
 
 var students = {};
 var teachers = {};
@@ -28,11 +31,12 @@ menu.addDelimiter('-', 40, 'Main Menu')
         function(nombre, direccion, diaNacimiento, mesNacimiento, anioNacimiento) {
 			var fechaNacimiento = new Date(anioNacimiento, mesNacimiento, diaNacimiento, 0, 0, 0, 0);
 			
-			var estudiante = new StudentModule.Student(StudentModule.getNewId(),nombre, direccion, fechaNacimiento);
+			var student = new StudentModule.Student(StudentModule.getNewId(),nombre, direccion, fechaNacimiento);
 			
-			students[estudiante.id] = estudiante;
+			students[student.id] = student;
 
-			console.log(estudiante);
+			logger.info('A student has been created:');
+			logger.info(student);
 			
         },null,
 		[{'name': 'Name', 'type': 'string'}, {'name': 'Address', 'type': 'string'}, {'name': 'Day of Birth', 'type': 'numeric'}, {'name': 'Month of Birth', 'type': 'numeric'}, {'name': 'Year of Birth', 'type': 'numeric'}])
@@ -46,7 +50,8 @@ menu.addDelimiter('-', 40, 'Main Menu')
 			
 			teachers[teacher.id] = teacher;
 
-			console.log(teacher);
+			logger.info('A teacher has been created:');
+			logger.info(teacher);
         },
         null,
 		[{'name': 'Name', 'type': 'string'}, {'name': 'Address', 'type': 'string'}, {'name': 'Day of Birth', 'type': 'numeric'}, {'name': 'Month of Birth', 'type': 'numeric'}, {'name': 'Year of Birth', 'type': 'numeric'}])
@@ -61,9 +66,9 @@ menu.addDelimiter('-', 40, 'Main Menu')
         	try{
 				student.enrollToCourse(course);
 			} catch(e){
-				console.log('Se generó el siguiente error:');
-				console.log(e);
-				console.log('Verifique parámetros');
+				logger.error('An error has been generated:');
+				logger.error(e);
+				ogger.error('Check the parameters you entered');
 			}
 		},
         null, 
@@ -84,25 +89,28 @@ menu.addDelimiter('-', 40, 'Main Menu')
 
 
            if(!course){
+           		logger.debug('Since course did not exists we have to create a new course.');
 	           	course = new CourseModule.Course(CourseModule.getNewId(),courseName,teacher);
 
 	           courses[course.id] = course;
 	       } else {
+	       		logger.debug('Since course did exists we set to it thewe have to create a new course.');
 	       		course.setTeacher(teacher);
 	       }
 
-	       console.log(course);
+	       logger.info('we have reconfigurated the course:');
+	       logger.info(course);
         },
         null, 
         [{'name': 'Teacher Id', 'type': 'numeric'}, {'name': 'Course Name', 'type': 'string'}])
     .addItem(
         'Export relational data',function(){
-        	new RelationsPersister(__dirname + '/storage/datos.json').export(students, teachers, courses);
+        	relationsPersister.export(students, teachers, courses);
 		},
         null)
     .addItem(
         'Import relational data',function(){
-        	new RelationsPersister(__dirname + '/storage/datos.json').import(
+        	relationsPersister.import(
         			function(data){
         				students = data['students'];
         				teachers = data['teachers'];

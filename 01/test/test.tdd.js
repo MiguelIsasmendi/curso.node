@@ -37,6 +37,7 @@ suite('PersonModule', function(){
 		});
 
 		test('own variables status', function(){
+			assert.equal(null, person.id,'property id should return null on initialization!!!');
 			assert.equal(null, person.name,'property name should return null on initialization!!!');
 			assert.equal(null, person.address,'property address should return null on initialization!!!');
 			assert.equal(null, person.birth_date,'property birth_date should return null on initialization!!!');
@@ -51,15 +52,39 @@ suite('PersonModule', function(){
 		
 	});
 
-	suite('Person name initialization', function(){
+	suite('Person id initialization', function(){
 		var person = null;
 
 		setup(function(){
-			person = new PersonModule.Person('pepe');
+			person = new PersonModule.Person(0);
 		});
 
 		test('own variables status', function(){
-			assert.equal('pepe', person.name,'property name should return null on initialization!!!');
+			assert.equal(0, person.id,'property id should return the parameter received on initialization!!!');
+			assert.equal(null, person.name,'property name should return null on initialization!!!');
+			assert.equal(null, person.address,'property address should return null on initialization!!!');
+			assert.equal(null, person.birth_date,'property birth_date should return null on initialization!!!');
+			
+			assert.notEqual(null, person.friends,'property friends should not return null on initialization!!!');
+			assert.equal([], person.friends.length,'property friends should return an empty Array on initialization!!!');
+
+			assert.notEqual(null, person.courses,'property courses should not return null on initialization!!!');
+			assert.equal([], person.courses.length,'property courses should return an empty Array on initialization!!!');
+			
+		});
+		
+	});
+
+	suite('Person id and name initialization', function(){
+		var person = null;
+
+		setup(function(){
+			person = new PersonModule.Person(0,'pepe');
+		});
+
+		test('own variables status', function(){
+			assert.equal(0, person.id,'property id should return the value received has parameter on initialization!!!');
+			assert.equal('pepe', person.name,'property name should return the value received has parameter on initialization!!!');
 			assert.equal(null, person.address,'property address should return null on initialization!!!');
 			assert.equal(null, person.birth_date,'property birth_date should return null on initialization!!!');
 			
@@ -72,14 +97,15 @@ suite('PersonModule', function(){
 		
 	});
 
-	suite('Person name and address initialization', function(){
+	suite('Person id, name and address initialization', function(){
 		var person = null;
 
 		setup(function(){
-			person = new PersonModule.Person('pepe','address');
+			person = new PersonModule.Person(0,'pepe','address');
 		});
 
 		test('own variables status', function(){
+			assert.equal(0, person.id,'property id should return the value received has parameter on initialization!!!');
 			assert.equal('pepe', person.name,'property name should return the value received has parameter on initialization!!!');
 			assert.equal('address', person.address,'property address should return the value received has parameter on initialization!!!');
 			assert.equal(null, person.birth_date,'property birth_date should return null on initialization!!!');
@@ -93,15 +119,16 @@ suite('PersonModule', function(){
 		
 	});
 
-		suite('Person name, address and day of birth initialization', function(){
+		suite('Person id, name, address and day of birth initialization', function(){
 		var person = null;
 		var dayOfBirth = new Date();
 
 		setup(function(){
-			person = new PersonModule.Person('pepe','address', dayOfBirth);
+			person = new PersonModule.Person(0, 'pepe','address', dayOfBirth);
 		});
 
 		test('own variables status', function(){
+			assert.equal(0, person.id,'property id should return the value received has parameter on initialization!!!');
 			assert.equal('pepe', person.name,'property name should return the value received has parameter on initialization!!!');
 			assert.equal('address', person.address,'property address should return the value received has parameter on initialization!!!');
 			assert.equal(dayOfBirth, person.birth_date,'property birth_date should return the value received has parameter on initialization!!!');
@@ -154,7 +181,6 @@ suite('StudentModule', function(){
 		});
 
 		test('own variables status', function(){
-			assert.notEqual(null, student.id,'property id should not return null on initialization!!!');
 			assert.equal(0, student.avg_grade,'property avg_grade should return null on initialization!!!');
 			assert.notEqual(null, student.current_grades,'property current_grades should return null on initialization!!!');
 			assert.isObject(student, student.current_grades,'property current_grades should be an anonimous Object instance!!!');
@@ -234,6 +260,7 @@ suite('CourseModule', function(){
 		});
 
 		test('variables status', function(){
+			assert.equal(null, course.id,'property id should return null on initialization!!!');
 			assert.equal(null, course.name,'property name should return null on initialization!!!');
 			assert.notEqual(null, course.students,'property students should not return null on initialization!!!');
 			assert.equal([], course.students.length,'property students should return an empty Array on initialization!!!');
@@ -246,10 +273,11 @@ suite('CourseModule', function(){
 		var course = null;
 
 		setup(function(){
-			course = new CourseModule.Course('Pepe');
+			course = new CourseModule.Course(0,'Pepe');
 		});
 
 		test('variables status', function(){
+			assert.equal(0, course.id,'property id should return the value assigned on initialization!!!');
 			assert.equal('Pepe', course.name,'property name should return the value assigned on initialization!!!');
 			assert.notEqual(null, course.students,'property students should not return null on initialization!!!');
 			assert.equal([], course.students.length,'property students should return an empty Array on initialization!!!');
@@ -263,10 +291,11 @@ suite('CourseModule', function(){
 		var teacher = new TeacherModule.Teacher();
 
 		setup(function(){
-			course = new CourseModule.Course('Pepe', teacher);
+			course = new CourseModule.Course(0,'Pepe', teacher);
 		});
 
 		test('variables status', function(){
+			assert.equal(0, course.id,'property id should return the value assigned on initialization!!!');
 			assert.equal('Pepe', course.name,'property name should return the value assigned on initialization!!!');
 			assert.equal(teacher, course.teacher,'property teacher should return the value passed by parameter to the constructor!!!');
 		});
