@@ -1,0 +1,5 @@
+extends layout
+
+block content
+  each value,index in hal._links 
+    p: a(href=value.href)= index
