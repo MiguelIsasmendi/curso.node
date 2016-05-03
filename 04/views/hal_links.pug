@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1 Links
+    each value,index in hal._links 
+      p: a(href=value.href)= index
+  if(hal._embedded)
+    h1 Embedded
+      each value,index in hal._embedded
+        p= JSON.stringify(value)

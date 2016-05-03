@@ -8,12 +8,21 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use('/', routes);
-app.use('/contacts', genericHalRoutes);
-app.use('/students', genericHalRoutes);
-app.use('/teachers', genericHalRoutes);
+
+app.use('/courses', genericHalRoutes('Courses', {prueba: true}, function(resource){
+  //resource.link('back', '/../');
+}));
+
+app.use('/students', genericHalRoutes('Students', {}, function(resource){
+  //resource.link('back', '/../');
+}));
+
+app.use('/teachers', genericHalRoutes('Teachers', {}, function(resource){
+  //resource.link('back', '/../');
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

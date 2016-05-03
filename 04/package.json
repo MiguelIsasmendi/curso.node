@@ -8,6 +8,7 @@
   "dependencies": {
     "express": "~4.13.1",
     "hal": "^0.1.0",
-    "jade": "~1.11.0"
+    "jade": "~1.11.0",
+    "pug": "^2.0.0-alpha6"
   }
 }

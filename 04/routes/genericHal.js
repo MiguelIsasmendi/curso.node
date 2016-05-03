@@ -1,10 +1,17 @@
 var express = require('express');
-var router = express.Router();
 var hal = require('hal');
 
-/* GET generic listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+module.exports = function(title, anObject, resourceConfigurationCallback){
+	var object = anObject || {};
+	var router = express.Router();
+	router.get('/', function(req, res, next) {
+	  	var resource = new hal.Resource(object, '/');
 
-module.exports = router;
+	  	resource.link('back', '../');
+
+	  	if(resourceConfigurationCallback)
+			resourceConfigurationCallback(resource);
+
+	 	res.render('hal_links', { title: title, hal: resource.toJSON() });
+	});
+	return router};
